@@ -1,0 +1,93 @@
+extends layout
+
+block content
+  h1 Ajax testing
+  small The page will make ajax by few ways for testing 
+  ul
+    li jquery
+      pre
+        code.jquery.json
+    li axios
+      pre
+        code.axios.json
+    li fetch
+      pre
+        code.fetch.json
+    li reqwest
+      pre
+        code.reqwest.json
+    li superagent
+      pre
+        code.superagent.json
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+  script(src="https://unpkg.com/axios/dist/axios.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/superagent/3.5.2/superagent.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.js")
+  script.
+    $(function () {
+      $.post('/', {
+        arr: ['1'],
+        obj: {foo: 'bar'}
+      }, function (res) {
+        console.log('jquery', res)
+        document.querySelector('.jquery').innerHTML = JSON.stringify(res, null, 2)
+      })
+
+      axios.post('/', {
+        arr: ['1'],
+        obj: {foo: 'bar'}
+      }).then(function (res) {
+        console.log('axios', res)
+        document.querySelector('.axios').innerHTML = JSON.stringify(res, null, 2)
+      })
+
+      fetch('/', {
+        method: 'POST',
+        headers: {
+          'Accept': '*/*',
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+        cache: 'default',
+        body: JSON.stringify({
+          arr: ['1'],
+          obj: {foo: 'bar'}
+        })
+      }).then(function (res) {
+        return res.json()
+      }).then(function (data) {
+        console.log('fetch', data)
+        document.querySelector('.fetch').innerHTML = JSON.stringify(data, null, 2)
+      })
+
+      // types support: html, xml, json, or json
+      reqwest({
+        url: '/',
+        type: 'json',
+        method: 'post',
+        data: {
+          arr: ['1'],
+          obj: {
+            foo: 'bar'
+          }
+        },
+        success: function (res) {
+          console.log('reqwest', res)
+          document.querySelector('.reqwest').innerHTML = JSON.stringify(res, null, 2)
+        }
+      })
+
+      superagent.post('/')
+        .send({
+          arr: ['1'], 
+          obj: {foo: 'bar'}
+        }).end(function (err, res) {
+          console.log('superagent', res)
+          document.querySelector('.superagent').innerHTML = JSON.stringify(res, null, 2)
+        })
+
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block)
+      })
+    })
+    
